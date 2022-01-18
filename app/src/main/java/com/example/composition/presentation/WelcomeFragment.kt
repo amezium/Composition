@@ -9,11 +9,11 @@ import com.example.composition.R
 import com.example.composition.databinding.FragmentWelcomeBinding
 
 
-class WelcomeFragment : Fragment() {
+class WelcomeFragment() : Fragment() {
 
     private var _binding: FragmentWelcomeBinding? = null
     private val binding: FragmentWelcomeBinding
-    get() = _binding ?: throw RuntimeException("FragmentWelcomeBinding null")
+        get() = _binding ?: throw RuntimeException("FragmentWelcomeBinding null")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,8 +26,15 @@ class WelcomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.buttonUnderstand.setOnClickListener {
-
+            launchChooseLevelFragment()
         }
+    }
+
+    fun launchChooseLevelFragment() {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .addToBackStack(null)
+            .replace(R.id.main_container, ChooseLevelFragment.newInstance()).commit()
+
     }
 
     override fun onDestroyView() {
