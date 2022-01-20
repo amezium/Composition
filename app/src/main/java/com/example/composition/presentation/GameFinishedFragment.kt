@@ -7,23 +7,20 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
 
 
 class GameFinishedFragment : Fragment() {
-    private lateinit var resultGame: GameResult
 
+    private val args by navArgs<GameFinishedFragmentArgs>()
     private var _binding: FragmentGameFinishedBinding? = null
     private val binding: FragmentGameFinishedBinding
         get() = _binding ?: throw RuntimeException("FragmentGameFinishedBinding = null")
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parsArg()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,12 +37,7 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun setUpClickListener() {
-        requireActivity().onBackPressedDispatcher
-            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    retryGame()
-                }
-            })
+
         binding.buttonRetry.setOnClickListener {
             retryGame()
         }
@@ -56,15 +48,15 @@ class GameFinishedFragment : Fragment() {
             emojiResult.setImageResource(getSmileResId())
             tvRequiredAnswers.text = String.format(
                 getString(R.string.required_score),
-                resultGame.gameSettings.minCountRightAnswers
+                args.result.gameSettings.minCountRightAnswers
             )
             tvScoreAnswers.text = String.format(
                 getString(R.string.score_answers),
-                resultGame.countOfRightAnswers
+                args.result.countOfRightAnswers
             )
             tvRequiredPercentage.text = String.format(
                 getString(R.string.required_percentage),
-                resultGame.gameSettings.minPercentRightAnswers
+                args.result.gameSettings.minPercentRightAnswers
             )
             tvScorePercentage.text = String.format(
                 getString(R.string.score_percentage),
@@ -74,12 +66,12 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun getSmileResId(): Int{
-        return if (resultGame.winner){
+        return if (args.result.winner){
             R.drawable.ic_smile
         }else R.drawable.ic_sad
     }
 
-    private fun getPercentOfRightAnswer() = with(resultGame){
+    private fun getPercentOfRightAnswer() = with(args.result){
         if(countOfQuestions == 0){
             0
         } else {
@@ -93,26 +85,7 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun retryGame() {
-        requireActivity().supportFragmentManager
-            .popBackStack(GameFragment.NAME, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        findNavController().popBackStack()
     }
 
-    private fun parsArg() {
-        requireArguments().getParcelable<GameResult>(KEY_RESULT)?.let {
-            resultGame = it
-        }
-    }
-
-    companion object {
-
-        const val KEY_RESULT = "result"
-
-        fun newInstance(result: GameResult): GameFinishedFragment {
-            return GameFinishedFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_RESULT, result)
-                }
-            }
-        }
-    }
 }
