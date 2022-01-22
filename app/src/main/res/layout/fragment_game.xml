@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.composition.presentation.GameViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".presentation.GameFragment"
@@ -14,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:textColor="@color/purple_700"
+        android:text="@{viewModel.formattedTime}"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +33,7 @@
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:background="@drawable/circle_background"
+        numberAsText="@{viewModel.question.sum}"
         app:layout_constraintBottom_toTopOf="@id/tv_left_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -42,6 +49,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/teal_700"
+        numberAsText="@{viewModel.question.visibleNumber}"
         app:layout_constraintBottom_toTopOf="@id/tv_option_1"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/tv_question"
@@ -71,12 +79,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_green_light"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(0).toString()}"
         app:layout_constraintBottom_toTopOf="@id/tv_option_4"
         app:layout_constraintEnd_toStartOf="@id/tv_option_5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="1"
-        />
+        tools:text="1" />
 
     <TextView
         android:id="@+id/tv_option_2"
@@ -84,11 +94,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_orange_light"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(1).toString()}"
         app:layout_constraintBottom_toTopOf="@id/tv_option_4"
         app:layout_constraintEnd_toStartOf="@id/tv_option_6"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/tv_option_4"
-        tools:text="2"
-        />
+        tools:text="2" />
 
     <TextView
         android:id="@+id/tv_option_3"
@@ -96,6 +108,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_purple"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(2).toString()}"
         app:layout_constraintBottom_toTopOf="@id/tv_option_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_option_5"
@@ -108,6 +122,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_blue_light"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(3).toString()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_option_5"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -121,6 +137,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_red_light"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(4).toString()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_option_6"
         app:layout_constraintStart_toEndOf="@id/tv_option_4"
@@ -133,6 +151,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_blue_bright"
+        onOptionClickListener="@{(option) -> viewModel.chooseAnswer(option)}"
+        android:text="@{viewModel.question.options.get(5).toString()}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_option_5"
@@ -143,7 +163,8 @@
         android:id="@+id/tv_answers_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/progress_answers"
+        android:text="@{viewModel.progressAnswer}"
+        enoughCount="@{viewModel.enoughCount}"
         android:layout_margin="16dp"
         app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintTop_toBottomOf="@id/tv_left_number"
@@ -156,6 +177,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:max="100"
+        progressBar="@{viewModel.percentOfRightsAnswer}"
+        enoughPercent="@{viewModel.enoughPercent}"
+        secondaryProgressBar="@{viewModel.minPercent}"
         android:secondaryProgressTint="@android:color/background_dark"
         app:layout_constraintBottom_toTopOf="@+id/tv_option_2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -164,3 +188,4 @@
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
